@@ -3,9 +3,8 @@ const crypto = require('crypto');
 
 const caseStatus = async(req, res, next) => {
     try{
-        const token = process.env.AUTH_TOKEN
+        
         const fetchAPI = process.env.FETCH_API
-
         let receiptNumber = req.params.receiptNumber;
 
         receiptNumber = receiptNumber.toUpperCase()
@@ -14,10 +13,31 @@ const caseStatus = async(req, res, next) => {
         }
         let jsonData ;
         let responseObject = {};
+        const tokenCheck = await fetch(`https://egov.uscis.gov/csol-api/ui-auth`, {
+            headers:{
+                "Content-Type":"application/json",
+                "Host":"egov.uscis.gov",
+                "Referer":"https://egov.uscis.gov/",
+                "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+            },
+            method:"GET",
+            mode:"cors",
+            cache:"no-cache",
+            credentials:"same-origin",
+            dispatcher: new Agent({
+                connect:{
+                    rejectUnauthorized:false,
+                    secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+
+                }
+            })
+        })
+        const tokenData = await tokenCheck.json()
+        const token = tokenData.JwtResponse.accessToken
         const fetchData = await fetch(`${fetchAPI}/${receiptNumber}`,{
             headers:{
                 "Content-Type":"application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `${tokenData.JwtResponse.tokenType} ${token}`
             },
             method:"GET",
             mode:"cors",
