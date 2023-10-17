@@ -54,11 +54,11 @@ const caseStatus = async(req, res, next) => {
             } 
         return res.status(200).json(responseObject)
        } else {
-            res.status(404).json({status:"Failed!", message:"API Error while fetching data", error:fetchData.statusText})
+            res.status(404).json({isValid:false, message:"API Error while fetching data", error:fetchData.statusText})
        }
     }catch(error){
         console.log('Error: ',error);
-        res.status(500).json({status:"Failed", message:"Internal server error while fetching data", error: error.message})
+        res.status(500).json({isValid:false, message:"Internal server error while fetching data", error: error.message})
     }
 }
 
