@@ -27,7 +27,7 @@ const fetchToken = async () => {
     }
   } catch (error) {
     console.error("Error in fetchToken:", error);
-    res.status(500).json({isValid:false, message:"Internal server error while fetching token", error:error.message})
+    throw new Error(error)
   }
 };
 
