@@ -1,16 +1,17 @@
 const express = require('express');
-const { caseStatus, showToken } = require('../controller/caseStatus');
+const { checkCaseStatus } = require('../controller/caseStatus');
 const {rateLimit} = require('express-rate-limit')
 
 const routes = express.Router();
 
 const apiLimiter = rateLimit({
-    windowMs: 60 * 1000 , 
-    limit: 50,
+    windowMs:15 * 60 * 1000,
+    limit: 100,
     standardHeaders:true,
-    legacyHeaders:false
+    legacyHeaders:false,
+    message: 'Rate limit exceeded. Please try again later.'
 })
 
-routes.get('/case-statuses/:receiptNumber',apiLimiter, caseStatus) 
+routes.get('/case-statuses/:receiptNumber', checkCaseStatus) 
 
 module.exports = routes
