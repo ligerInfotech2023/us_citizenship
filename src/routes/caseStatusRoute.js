@@ -12,6 +12,6 @@ const apiLimiter = rateLimit({
     message: 'Rate limit exceeded. Please try again later.'
 })
 
-routes.get('/case-statuses/:receiptNumber', checkCaseStatus) 
+routes.get('/:receiptNumber', checkCaseStatus) 
 
 module.exports = routes
