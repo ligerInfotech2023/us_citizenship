@@ -92,22 +92,24 @@ const makeRequiestWithRetries = async(fetchAPI, receiptNumber, retries = 0) => {
         throw new Error(`Token API responded with status: ${res.status}`)
       }
       const jsonData = await res.json()
+      if(jsonData.CaseStatusResponse.isValid === false){
+        return ({isValid:false, message:`The receipt number entered is invalid`})
+      }
       let responseObject = {
-        isValid: jsonData.CaseStatusResponse.isValid,
-        receiptNumber: jsonData.CaseStatusResponse.receiptNumber,
-        formNum: jsonData.CaseStatusResponse.detailsEng.formNum,
-        formTitle: jsonData.CaseStatusResponse.detailsEng.formTitle,
-        actionCodeText: jsonData.CaseStatusResponse.detailsEng.actionCodeText,
-        actionCodeDesc: jsonData.CaseStatusResponse.detailsEng.actionCodeDesc,
+        isValid: jsonData ? jsonData.CaseStatusResponse.isValid : null,
+        receiptNumber: jsonData ? jsonData.CaseStatusResponse.receiptNumber : null,
+        formNum: jsonData ? jsonData.CaseStatusResponse.detailsEng.formNum : null,
+        formTitle: jsonData ? jsonData.CaseStatusResponse.detailsEng.formTitle : null,
+        actionCodeText: jsonData ? jsonData.CaseStatusResponse.detailsEng.actionCodeText : null,
+        actionCodeDesc: jsonData ? jsonData.CaseStatusResponse.detailsEng.actionCodeDesc : null,
       };
       return responseObject
   }catch(err){
-    console.log('Error: ',err);
+    // console.log('Error: ',err);
     if(retries < maxRetries){
       await new Promise((resolve) => setTimeout(resolve, retryInterval));
       return makeRequiestWithRetries(fetchAPI, receiptNumber, retries + 1)
     } else{
-      console.log('Error:-> ',err);
       throw new Error(err);
     }
   }
