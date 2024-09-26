@@ -38,7 +38,7 @@ const getToken = async() => {
 }
 
 const tokenFromGetApi = async() => {
-  const tokenValidityDuration = 30 * 60 * 1000;
+  const tokenValidityDuration = 10 * 60 * 1000;
   try{
     const currentTimestamp = Date.now();
     const cachedToken = cache.get("token")
